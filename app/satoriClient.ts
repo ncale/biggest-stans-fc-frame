@@ -12,8 +12,8 @@ async function makeSvg(username: string, stanUsernames: string[], stanTotalReact
     const tsx = SvgMarkup(username, stanUsernames, stanTotalReactions);
     const fontArrayBuffer = await getFontArrayBuffer(SVG_FONT_URL);
     const options: SatoriOptions = {
-        width: 600,
-        height: 400,
+        width: 1200,
+        height: 628,
         fonts: [{name: 'Inter', data: fontArrayBuffer}]
     }
     const svg = await satori(tsx, options);

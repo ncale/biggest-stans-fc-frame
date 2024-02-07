@@ -19,11 +19,12 @@ function SvgMarkup(username: string, userList: string[], totalReactionsList: num
                 marginTop: 15,
                 marginLeft: 50
                 }}>
-                <h1>{username}s Biggest Stans</h1>
+                <h1>{username}{"'s Biggest Stans"}</h1>
                 <ul
                 style={{
                     display: 'flex',
                     flexDirection: 'column',
+                    fontSize: 42,
                 }}>
                 <li>1. {userList[0]}... {totalReactionsList[0]} reactions</li>
                 <li>2. {userList[1]}... {totalReactionsList[1]} reactions</li>
