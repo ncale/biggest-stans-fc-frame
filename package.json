@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@coinbase/onchainkit": "^0.5.0",
+    "@cowprotocol/ts-dune-client": "^0.0.2",
     "dotenv": "^16.4.1",
     "next": "14.1.0",
     "react": "^18",
