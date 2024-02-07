@@ -2,8 +2,7 @@ import { FrameRequest, getFrameMessage, getFrameHtmlResponse } from '@coinbase/o
 import { NextRequest, NextResponse } from 'next/server';
 import { NEXT_PUBLIC_URL, DUNE_QUERY_ID, DUNE_API_KEY } from '../../config';
 import { DuneClient, QueryParameter } from '@cowprotocol/ts-dune-client';
-import satori from 'satori';
-import { makeSvgMarkup } from '@/app/generativeSvg';
+import makeSvg from '@/app/satoriClient';
 
 async function queryDune(queryId: number, parameters: QueryParameter[]) {
     const client = new DuneClient(DUNE_API_KEY ?? "");
@@ -11,7 +10,7 @@ async function queryDune(queryId: number, parameters: QueryParameter[]) {
     return response.result?.rows;
 };
 
-function unpackStanQuery(stans: ...) { // <- need to add dune object type
+function unpackStanQuery(stans: Record<string, string | number>[]) { // <- need to add dune object type
     let stanUsernames: string[] = [];
     let stanTotalReactions: number[] = [];
     for (const stan of stans) {
@@ -21,26 +20,12 @@ function unpackStanQuery(stans: ...) { // <- need to add dune object type
     return [stanUsernames, stanTotalReactions];
 };
 
-async function makeSvg(username: string, stanUsernames: string[], stanTotalReactions: number[]) {
-    const tsx:  = makeSvgMarkup(username, stanUsernames, stanTotalReactions); // <- need to add satori react type
-    const options = {
-        width: 600,
-        height: 400,
-        fonts: [
-            {
-                name: 'Roboto',
-            }
-        ]
-    }
-
-    const svg = await satori(tsx, options)
-};
-
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   
   let text: string | undefined = '';
   let stanUsernames: string[] = [];
   let stanTotalReactions: number[] = [];
+  let svg: string = '';
   
   const body: FrameRequest = await req.json();
   const { isValid, message } = await getFrameMessage(body, { neynarApiKey: 'NEYNAR_ONCHAIN_KIT' });
@@ -60,7 +45,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     // Unpack query
     [stanUsernames, stanTotalReactions] = unpackStanQuery(stans);
     // Create SVG using the stan list
-    const svg = await makeSvg(text, stanUsernames, stanTotalReactions);
+    svg = await makeSvg(text, stanUsernames, stanTotalReactions);
   }
 
   return new NextResponse(
@@ -70,7 +55,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           label: 'Search again?',
         },
       ],
-      image: `${NEXT_PUBLIC_URL}/...`, // <- need to add a picture
+      image: svg, // <- need to add a picture
       post_url: `${NEXT_PUBLIC_URL}/api/frame`,
     }),
   );
