@@ -1,11 +1,11 @@
 import { SVG_FONT_URL } from './config';
 import satori, { SatoriOptions } from 'satori';
 import SvgMarkup from '@/src/components/SvgMarkup';
-import fetch from 'node-fetch';
+import { openAsBlob } from 'fs';
 
 async function getFontArrayBuffer(fontUrl: string): Promise<ArrayBuffer> {
-  const response = await fetch(fontUrl);
-  return response.arrayBuffer();
+  const blob = await openAsBlob(fontUrl);
+  return blob.arrayBuffer();
 };
 
 async function makeSvg(username: string, stanUsernames: string[], stanTotalReactions: number[]): Promise<string> {
