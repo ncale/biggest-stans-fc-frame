@@ -1,11 +1,17 @@
 import { SVG_FONT_URL } from './config';
 import satori, { SatoriOptions } from 'satori';
 import SvgMarkup from '@/src/components/SvgMarkup';
-import fetch from 'node-fetch';
+import { promises as fs } from 'fs';
 
 async function getFontData(fontPath: string): Promise<ArrayBuffer> {
-  const response = await fetch(new URL(fontPath, import.meta.url));
-  return response.arrayBuffer();
+  try {
+    const data = await fs.readFile(fontPath);
+    const arrayBuffer = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
+    return arrayBuffer;
+  } catch (err) {
+    console.error('Error reading file:', err);
+    throw err;
+  }
 };
 
 async function makeSvg(username: string, stanUsernames: string[], stanTotalReactions: number[]): Promise<string> {
