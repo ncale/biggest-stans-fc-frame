@@ -23,7 +23,9 @@ async function makeSvg(username: string, stanUsernames: string[], stanTotalReact
         height: 628,
         fonts: [{name: 'Inter', data: fontData}]
     }
+    console.log("creating the SVG...");
     const svg = await satori(tsx, options);
+    console.log("SVG output:", svg);
     return svg;
 };
 

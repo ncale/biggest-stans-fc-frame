@@ -16,6 +16,8 @@ export default async function runStanQuery(username: string, numResults: number 
       QueryParameter.text('user_input_fname', username),
       QueryParameter.number('num_results_to_return', numResults),
     ];
+    console.log("running stan query...");
     let response = await client.refresh(DUNE_QUERY_ID, parameters);
+    console.log("printing results:", response);
     return response.result?.rows as StanRecord[];
 };
