@@ -14,6 +14,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const body: FrameRequest = await req.json();
   const { isValid, message } = await getFrameMessage(body, { neynarApiKey: NEYNAR_API_KEY });
 
+
+  /*
   if (isValid) {
     // Assign a username value
     if (message?.input) {
@@ -32,7 +34,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     })
     // Create SVG using the stan list
     svg = await makeSvg(userInput, stanUsernames, stanTotalReactions);
-  }
+  };
+  */
 
   return new NextResponse(
     getFrameHtmlResponse({
@@ -41,13 +44,14 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           label: 'Search again?',
         },
       ],
-      image: svg,
+      image: `${NEXT_PUBLIC_URL}/thumbnail.png`,
       post_url: `${NEXT_PUBLIC_URL}/api/frame`,
     }),
   );
 }
 
 export async function POST(req: NextRequest): Promise<Response> {
+  console.log("Message received a POST request... returned a response")
   return await getResponse(req);
 }
 
