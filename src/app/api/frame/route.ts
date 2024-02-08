@@ -16,7 +16,11 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   if (isValid) {
     // Assign a username value
-    userInput = message?.input ? message.input : 'vitalik.eth';
+    if (message?.input) {
+      userInput = message.input;
+    } else {
+      userInput = 'vitalik.eth';
+    };
     // Check if username exists
     // ...
     // Call API

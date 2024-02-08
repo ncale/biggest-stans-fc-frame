@@ -1,4 +1,3 @@
-import { SVG_FONT_PATH } from './config';
 import satori, { SatoriOptions } from 'satori';
 import SvgMarkup from '@/src/components/SvgMarkup';
 import { join } from 'path';
@@ -7,7 +6,7 @@ import * as fs from "fs";
 async function getFontData(): Promise<ArrayBuffer> {
   try {
     // Create path
-    const fontPath = join(process.cwd(), 'inter.ttf')
+    const fontPath = join(process.cwd(), 'Roboto-Regular.ttf')
     let fontData = fs.readFileSync(fontPath)
     return fontData;
   } catch (err) {
