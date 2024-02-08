@@ -1,6 +1,6 @@
 import { FrameRequest, getFrameMessage, getFrameHtmlResponse } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
-import { NEXT_PUBLIC_URL } from '../../../utils/config';
+import { NEXT_PUBLIC_URL, NEYNAR_API_KEY } from '../../../utils/config';
 import runStanQuery from '@/src/utils/duneApi';
 import makeSvg from '@/src/utils/satoriSvg';
 
@@ -12,7 +12,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   let svg: string = '';
   
   const body: FrameRequest = await req.json();
-  const { isValid, message } = await getFrameMessage(body, { neynarApiKey: 'NEYNAR_ONCHAIN_KIT' });
+  const { isValid, message } = await getFrameMessage(body, { neynarApiKey: NEYNAR_API_KEY });
 
   if (isValid) {
     // Assign a username value
