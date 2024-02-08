@@ -1,20 +1,15 @@
 import { SVG_FONT_PATH } from './config';
 import satori, { SatoriOptions } from 'satori';
 import SvgMarkup from '@/src/components/SvgMarkup';
-import { promises as fs } from 'fs';
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { join } from 'path';
+import * as fs from "fs";
 
-async function getFontData(relativePath: string): Promise<ArrayBuffer> {
+async function getFontData(): Promise<ArrayBuffer> {
   try {
     // Create path
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = dirname(__filename);
-    const fontPath = path.resolve(__dirname, relativePath);
-    // Read file
-    const data = await fs.readFile(fontPath, 'binary');
-    const arrayBuffer = Buffer.from(data, 'binary').buffer;
-    return arrayBuffer;
+    const fontPath = join(process.cwd(), 'inter.ttf')
+    let fontData = fs.readFileSync(fontPath)
+    return fontData;
   } catch (err) {
     console.error('Error reading file:', err);
     throw err;
@@ -23,7 +18,7 @@ async function getFontData(relativePath: string): Promise<ArrayBuffer> {
 
 async function makeSvg(username: string, stanUsernames: string[], stanTotalReactions: number[]): Promise<string> {
     const tsx = SvgMarkup(username, stanUsernames, stanTotalReactions);
-    const fontData = await getFontData(SVG_FONT_PATH);
+    const fontData = await getFontData();
     const options: SatoriOptions = {
         width: 1200,
         height: 628,
