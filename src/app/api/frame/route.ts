@@ -48,7 +48,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 }
 
 export async function POST(req: NextRequest): Promise<Response> {
-  return getResponse(req);
+  return await getResponse(req);
 }
 
 export const dynamic = 'force-dynamic';
