@@ -1,28 +1,12 @@
 import { FrameRequest, getFrameMessage, getFrameHtmlResponse } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
-import { NEXT_PUBLIC_URL, DUNE_QUERY_ID, DUNE_API_KEY } from '../../config';
-import { DuneClient, QueryParameter } from '@cowprotocol/ts-dune-client';
+import { NEXT_PUBLIC_URL } from '../../config';
+import runStanQuery from '@/app/duneClient';
 import makeSvg from '@/app/satoriClient';
-
-async function queryDune(queryId: number, parameters: QueryParameter[]) {
-    const client = new DuneClient(DUNE_API_KEY ?? "");
-    const response = await client.refresh(queryId, parameters);
-    return response.result?.rows;
-};
-
-function unpackStanQuery(stans: Record<string, string | number>[]) { // <- need to add dune object type
-    let stanUsernames: string[] = [];
-    let stanTotalReactions: number[] = [];
-    for (const stan of stans) {
-        stanUsernames.push(stan.username);
-        stanTotalReactions.push(stan.comments_from + stan.likes_from + stan.recasts_from);
-    };
-    return [stanUsernames, stanTotalReactions];
-};
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   
-  let text: string | undefined = '';
+  let userInput: string | undefined = '';
   let stanUsernames: string[] = [];
   let stanTotalReactions: number[] = [];
   let svg: string = '';
@@ -32,20 +16,18 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   if (isValid) {
     // Assign a username value
-    text = message?.input ? message.input : 'vitalik.eth';
+    userInput = message?.input ? message.input : 'vitalik.eth';
     // Check if username exists
     // ...
-    // Create Dune params using user input
-    const params = [
-        QueryParameter.text('user_input_fname', text),
-        QueryParameter.number('num_results_to_return', 5),
-    ];
     // Call API
-    const stans = await queryDune(DUNE_QUERY_ID, params);
+    const stans = await runStanQuery(userInput, 5);
     // Unpack query
-    [stanUsernames, stanTotalReactions] = unpackStanQuery(stans);
+    stans.forEach((stan) => {
+      stanUsernames.push(stan.username);
+      stanTotalReactions.push(stan.comments_from + stan.likes_from + stan.recasts_from);
+    })
     // Create SVG using the stan list
-    svg = await makeSvg(text, stanUsernames, stanTotalReactions);
+    svg = await makeSvg(userInput, stanUsernames, stanTotalReactions);
   }
 
   return new NextResponse(
