@@ -1,8 +1,8 @@
 import { FrameRequest, getFrameMessage, getFrameHtmlResponse } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
-import { NEXT_PUBLIC_URL } from '../../config';
-import runStanQuery from '@/app/duneClient';
-import makeSvg from '@/app/satoriClient';
+import { NEXT_PUBLIC_URL } from '../../../utils/config';
+import runStanQuery from '@/src/utils/duneApi';
+import makeSvg from '@/src/utils/satoriSvg';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   
@@ -37,7 +37,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           label: 'Search again?',
         },
       ],
-      image: svg, // <- need to add a picture
+      image: svg,
       post_url: `${NEXT_PUBLIC_URL}/api/frame`,
     }),
   );

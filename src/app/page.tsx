@@ -1,6 +1,6 @@
 import { getFrameMetadata } from '@coinbase/onchainkit';
 import type { Metadata } from 'next';
-import { NEXT_PUBLIC_URL } from './config';
+import { NEXT_PUBLIC_URL } from '../utils/config';
 
 const frameMetadata = getFrameMetadata({
   buttons: [{label: 'Find stans'}],

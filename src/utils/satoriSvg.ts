@@ -1,6 +1,6 @@
 import { SVG_FONT_URL } from './config';
 import satori, { SatoriOptions } from 'satori';
-import SvgMarkup from '@/app/SvgMarkup';
+import SvgMarkup from '@/src/components/SvgMarkup';
 import fetch from 'node-fetch';
 
 async function getFontArrayBuffer(fontUrl: string): Promise<ArrayBuffer> {
