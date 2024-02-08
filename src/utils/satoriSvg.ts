@@ -1,7 +1,8 @@
 import satori, { SatoriOptions } from 'satori';
 import SvgMarkup from '@/src/components/SvgMarkup';
 import { join } from 'path';
-import * as fs from "fs";
+import * as fs from 'fs';
+import { Resvg } from '@resvg/resvg-js'
 
 async function getFontData(): Promise<ArrayBuffer> {
   try {
@@ -15,7 +16,7 @@ async function getFontData(): Promise<ArrayBuffer> {
   }
 };
 
-async function makeSvg(username: string, stanUsernames: string[], stanTotalReactions: number[]): Promise<string> {
+export async function makeSvg(username: string, stanUsernames: string[], stanTotalReactions: number[]): Promise<string> {
     const tsx = SvgMarkup(username, stanUsernames, stanTotalReactions);
     const fontData = await getFontData();
     const options: SatoriOptions = {
@@ -29,4 +30,29 @@ async function makeSvg(username: string, stanUsernames: string[], stanTotalReact
     return svg;
 };
 
-export default makeSvg;
+export function convertToPng(svg: string) {
+  const opts = {
+    background: 'rgba(238, 235, 230, .9)',
+    fitTo: {
+      mode: 'width',
+      value: 1200,
+    },
+    font: {
+      fontFiles: ['./example/SourceHanSerifCN-Light-subset.ttf'], // Load custom fonts.
+      loadSystemFonts: false, // It will be faster to disable loading system fonts.
+      // defaultFontFamily: 'Source Han Serif CN Light', // You can omit this.
+    },
+  }
+  const resvg = new Resvg(svg)
+  const pngData = resvg.render()
+  const pngBuffer = pngData.asPng()
+
+  console.info('Original SVG Size:', `${resvg.width} x ${resvg.height}`)
+  console.info('Output PNG Size  :', `${pngData.width} x ${pngData.height}`)
+
+  console.log("CURRENT WD:", process.cwd())
+
+  const pngFileName = join(process.cwd(), './text-out.png')
+  const response = fs.writeFileSync(pngFileName, pngBuffer)
+  return pngFileName;
+}

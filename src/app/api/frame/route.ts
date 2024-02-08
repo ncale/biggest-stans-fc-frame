@@ -2,7 +2,7 @@ import { FrameRequest, getFrameMessage, getFrameHtmlResponse } from '@coinbase/o
 import { NextRequest, NextResponse } from 'next/server';
 import { NEXT_PUBLIC_URL, NEYNAR_API_KEY } from '../../../utils/config';
 import runStanQuery from '@/src/utils/duneApi';
-import makeSvg from '@/src/utils/satoriSvg';
+import { makeSvg, convertToPng } from '@/src/utils/satoriSvg';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   
@@ -10,12 +10,13 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   let stanUsernames: string[] = [];
   let stanTotalReactions: number[] = [];
   let svg: string = '';
+  let pngPath: string = '';
   
   const body: FrameRequest = await req.json();
   const { isValid, message } = await getFrameMessage(body, { neynarApiKey: NEYNAR_API_KEY });
 
 
-  /*
+  
   if (isValid) {
     // Assign a username value
     if (message?.input) {
@@ -34,8 +35,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     })
     // Create SVG using the stan list
     svg = await makeSvg(userInput, stanUsernames, stanTotalReactions);
+    // Convert to PNG
+    pngPath = convertToPng(svg);
   };
-  */
+  
 
   return new NextResponse(
     getFrameHtmlResponse({
@@ -44,7 +47,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           label: 'Search again?',
         },
       ],
-      image: `${NEXT_PUBLIC_URL}/thumbnail.png`,
+      image: pngPath,
       post_url: `${NEXT_PUBLIC_URL}/api/frame`,
     }),
   );
