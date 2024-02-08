@@ -1,4 +1,4 @@
-import { SVG_FONT_PATH } from './config';
+import { NEXT_PUBLIC_URL, SVG_FONT_PATH } from './config';
 import satori, { SatoriOptions } from 'satori';
 import SvgMarkup from '@/src/components/SvgMarkup';
 import { promises as fs } from 'fs';
@@ -7,12 +7,14 @@ import { fileURLToPath } from 'url';
 
 async function getFontData(relativePath: string): Promise<ArrayBuffer> {
   try {
+    /*
     // Create path
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
     const fontPath = path.resolve(__dirname, relativePath);
+    */
     // Read file
-    const data = await fs.readFile(fontPath);
+    const data = await fs.readFile(`${NEXT_PUBLIC_URL}/inter.ttf`);
     // Create and return array buffer
     const arrayBuffer = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
     return arrayBuffer;
